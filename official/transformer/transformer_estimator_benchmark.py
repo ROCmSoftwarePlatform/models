@@ -155,7 +155,7 @@ class TransformerBigEstimatorAccuracy(EstimatorBenchmark):
     FLAGS['bleu_source'].value = self.bleu_source
     FLAGS['bleu_ref'].value = self.bleu_ref
     FLAGS.param_set = 'big'
-    FLAGS.batch_size = 3072 * 8
+    FLAGS.batch_size = 1024 * 8
     FLAGS.train_steps = 100000
     FLAGS.steps_between_evals = 5000
     FLAGS.model_dir = self._get_model_dir('benchmark_graph_8_gpu')
@@ -175,7 +175,7 @@ class TransformerBigEstimatorAccuracy(EstimatorBenchmark):
     FLAGS['bleu_source'].value = self.bleu_source
     FLAGS['bleu_ref'].value = self.bleu_ref
     FLAGS.param_set = 'big'
-    FLAGS.batch_size = 3072 * 8
+    FLAGS.batch_size = 1024 * 8
     FLAGS.static_batch = True
     FLAGS.max_length = 64
     FLAGS.train_steps = 100000
@@ -492,7 +492,7 @@ class TransformerBigEstimatorBenchmarkReal(TransformerEstimatorBenchmark):
     def_flags['hooks'] = ['ExamplesPerSecondHook']
 
     super(TransformerBigEstimatorBenchmarkReal, self).__init__(
-        output_dir=output_dir, default_flags=def_flags, batch_per_gpu=3072)
+        output_dir=output_dir, default_flags=def_flags, batch_per_gpu=1024)
 
 
 class TransformerBigEstimatorBenchmarkSynth(TransformerEstimatorBenchmark):
@@ -507,4 +507,4 @@ class TransformerBigEstimatorBenchmarkSynth(TransformerEstimatorBenchmark):
     def_flags['hooks'] = ['ExamplesPerSecondHook']
 
     super(TransformerBigEstimatorBenchmarkSynth, self).__init__(
-        output_dir=output_dir, default_flags=def_flags, batch_per_gpu=3072)
+        output_dir=output_dir, default_flags=def_flags, batch_per_gpu=1024)
