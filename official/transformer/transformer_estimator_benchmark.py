@@ -142,6 +142,26 @@ class TransformerBigEstimatorAccuracy(EstimatorBenchmark):
     super(TransformerBigEstimatorAccuracy, self).__init__(
         output_dir=output_dir, flag_methods=flag_methods)
 
+  def benchmark_graph_1_gpu(self):
+    """Benchmark graph mode 1 gpus.
+
+      SOTA is 28.4 BLEU (uncased).
+    """
+    self._setup()
+    FLAGS.num_gpus = 1
+    FLAGS.data_dir = self.train_data_dir
+    FLAGS.vocab_file = self.vocab_file
+    # Sets values directly to avoid validation check.
+    FLAGS['bleu_source'].value = self.bleu_source
+    FLAGS['bleu_ref'].value = self.bleu_ref
+    FLAGS.param_set = 'big'
+    FLAGS.batch_size = 1024
+    FLAGS.train_steps = 100000
+    FLAGS.steps_between_evals = 5000
+    FLAGS.model_dir = self._get_model_dir('benchmark_graph_1_gpu')
+    FLAGS.hooks = ['ExamplesPerSecondHook']
+    self._run_and_report_benchmark()
+
   def benchmark_graph_8_gpu(self):
     """Benchmark graph mode 8 gpus.
 
@@ -232,6 +252,29 @@ class TransformerBaseEstimatorAccuracy(EstimatorBenchmark):
 
     super(TransformerBaseEstimatorAccuracy, self).__init__(
         output_dir=output_dir, flag_methods=flag_methods)
+
+  def benchmark_graph_1_gpu(self):
+    """Benchmark graph mode 1 gpus.
+
+      The paper uses 8 GPUs and a much larger effective batch size, this is will
+      not converge to the 27.3 BLEU (uncased) SOTA.
+    """
+    self._setup()
+    FLAGS.num_gpus = 1
+    FLAGS.data_dir = self.train_data_dir
+    FLAGS.vocab_file = self.vocab_file
+    # Sets values directly to avoid validation check.
+    FLAGS['bleu_source'].value = self.bleu_source
+    FLAGS['bleu_ref'].value = self.bleu_ref
+    FLAGS.param_set = 'base'
+    FLAGS.batch_size = 4096
+    FLAGS.train_steps = 100000
+    FLAGS.steps_between_evals = 5000
+    FLAGS.model_dir = self._get_model_dir('benchmark_graph_1_gpu')
+    FLAGS.hooks = ['ExamplesPerSecondHook']
+    # These bleu scores are based on test runs after at this limited
+    # number of steps and batch size after verifying SOTA at 8xV100s.
+    self._run_and_report_benchmark(bleu_min=25.3, bleu_max=26)
 
   def benchmark_graph_2_gpu(self):
     """Benchmark graph mode 2 gpus.
