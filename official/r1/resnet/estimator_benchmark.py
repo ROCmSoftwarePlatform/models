@@ -275,7 +275,7 @@ class Resnet50EstimatorBenchmark(Resnet50EstimatorBenchmarkBase):
 
     FLAGS.num_gpus = 1
     FLAGS.model_dir = self._get_model_dir('benchmark_graph_1_gpu')
-    FLAGS.batch_size = 128
+    FLAGS.batch_size = 64
     FLAGS.dtype = 'fp32'
     FLAGS.hooks = ['ExamplesPerSecondHook']
     self._run_and_report_benchmark()
