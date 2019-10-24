@@ -134,6 +134,19 @@ class Resnet50EstimatorAccuracy(EstimatorBenchmark):
     super(Resnet50EstimatorAccuracy, self).__init__(
         output_dir=output_dir, flag_methods=flag_methods)
 
+  def benchmark_graph_1_gpu(self):
+    """Test 1 GPUs graph mode. Reduced batch size to 64 to fit in 8 GB VMEM"""
+    self._setup()
+    FLAGS.num_gpus = 1
+    FLAGS.data_dir = self.data_dir
+    FLAGS.batch_size = 64
+    FLAGS.train_epochs = 90
+    FLAGS.epochs_between_evals = 10
+    FLAGS.model_dir = self._get_model_dir('benchmark_graph_1_gpu')
+    FLAGS.dtype = 'fp32'
+    FLAGS.hooks = ['ExamplesPerSecondHook']
+    self._run_and_report_benchmark()
+
   def benchmark_graph_8_gpu(self):
     """Test 8 GPUs graph mode."""
     self._setup()
@@ -262,7 +275,7 @@ class Resnet50EstimatorBenchmark(Resnet50EstimatorBenchmarkBase):
 
     FLAGS.num_gpus = 1
     FLAGS.model_dir = self._get_model_dir('benchmark_graph_1_gpu')
-    FLAGS.batch_size = 128
+    FLAGS.batch_size = 64
     FLAGS.dtype = 'fp32'
     FLAGS.hooks = ['ExamplesPerSecondHook']
     self._run_and_report_benchmark()
